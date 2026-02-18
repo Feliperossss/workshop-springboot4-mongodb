@@ -50,9 +50,9 @@ public class PostService {
 		postData.setBody(obj.getBody());
 	}
 	
-	public User fromDTO(UserDTO objDto) {
-		
-		return new User(objDto.getId(), objDto.getName(), objDto.getEmail());
+	
+	public List<Post> findByTitle(String text) {
+		return repository.findByTitleContainingIgnoreCase(text);
 	}
 	
 }

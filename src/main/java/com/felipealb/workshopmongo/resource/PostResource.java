@@ -14,12 +14,14 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import com.felipealb.workshopmongo.DTO.UserDTO;
 import com.felipealb.workshopmongo.domain.Post;
 import com.felipealb.workshopmongo.domain.User;
+import com.felipealb.workshopmongo.resource.util.URL;
 import com.felipealb.workshopmongo.service.PostService;
 
 @RestController
@@ -61,6 +63,13 @@ public class PostResource {
 		return ResponseEntity.noContent().build();
 	}
 	
+
+	@GetMapping(value = "/titlesearch")
+	public ResponseEntity< List<Post>> findByTitle(@RequestParam(value = "text", defaultValue = "")String  text){
+		text = URL.decodeParam(text);
+		List<Post> posts = service.findByTitle(text);
+		return ResponseEntity.ok().body(posts);
+	}
 	
 	
 }
