@@ -20,34 +20,31 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import com.felipealb.workshopmongo.DTO.UserDTO;
 import com.felipealb.workshopmongo.domain.Post;
 import com.felipealb.workshopmongo.domain.User;
-import com.felipealb.workshopmongo.service.UserService;
+import com.felipealb.workshopmongo.service.PostService;
 
 @RestController
-@RequestMapping(value = "/users")
-public class UserResource {
+@RequestMapping(value = "/posts")
+public class PostResource {
 	
 	@Autowired
-	private UserService service;
+	private PostService service;
 	
 	@GetMapping
-	public  ResponseEntity< List<UserDTO>> findAll(){
-		List<User> list = service.findAll();	
-		List<UserDTO> listDto = list.stream().map(x -> new UserDTO(x)).collect(Collectors.toList());
-		return ResponseEntity.ok().body(listDto);
+	public  ResponseEntity< List<Post>> findAll(){
+		List<Post> list = service.findAll();	
+		return ResponseEntity.ok().body(list);
 	}
 	
 	@GetMapping(value = "/{id}")
-	public  ResponseEntity<UserDTO> findById(@PathVariable String id){
-		UserDTO userDto = new UserDTO(service.findById(id));
-	
-		return ResponseEntity.ok().body(userDto);
+	public  ResponseEntity<Post> findById(@PathVariable String id){
+		Post post = service.findById(id);
+		return ResponseEntity.ok().body(post);
 	}
 	
 	@PostMapping
-	public  ResponseEntity<Void> insert(@RequestBody UserDTO objDto){
-		User user = service.fromDTO(objDto);
-		user =service.insert(user);
-		URI uri = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}").buildAndExpand(user.getId()).toUri();
+	public  ResponseEntity<Void> insert(@RequestBody Post obj){
+		Post post = service.insert(obj);
+		URI uri = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}").buildAndExpand(post.getId()).toUri();
 		return ResponseEntity.created(uri).build();
 	}
 	
@@ -58,18 +55,12 @@ public class UserResource {
 	}
 	
 	@PutMapping(value = "/{id}")
-	public  ResponseEntity<Void> update(@RequestBody UserDTO objDto, @PathVariable String id){
-		User user = service.fromDTO(objDto);
-		user.setId(id);
-		user =service.update(user);
+	public  ResponseEntity<Void> update(@RequestBody Post obj, @PathVariable String id){
+		obj.setId(id);
+		obj =service.update(obj);
 		return ResponseEntity.noContent().build();
 	}
 	
-	@GetMapping(value = "/{id}/posts")
-	public  ResponseEntity<List<Post>> findPosts(@PathVariable String id){
-		User user = service.findById(id);
-		
-		return ResponseEntity.ok().body(user.getPosts());
-	}
+	
 	
 }
